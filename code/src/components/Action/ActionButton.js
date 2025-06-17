@@ -9,6 +9,8 @@ import { MoreInfo } from './MoreInfo';
 import { OnHoldForYou } from './OnHoldForYou';
 import { OpenSideLoad } from './OpenSideLoad';
 
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../util/logging.js';
+
 export const ActionButton = (data) => {
      const action = data.actions;
      const {
@@ -66,6 +68,8 @@ export const ActionButton = (data) => {
                          holdTypeForFormat={holdTypeForFormat}
                          variationId={variationId}
                          volumeInfo={volumeInfo}
+                         volumeId={action.volumeId}
+                         volumeName={action.volumeName}
                          prevRoute={prevRoute}
                          setResponseIsOpen={setResponseIsOpen}
                          responseIsOpen={responseIsOpen}

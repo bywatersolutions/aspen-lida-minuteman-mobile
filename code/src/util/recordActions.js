@@ -8,9 +8,11 @@ import { createAuthTokens, getHeaders, postData, problemCodeMap } from './apiAut
 import { GLOBALS } from './globals';
 import { getTermFromDictionary } from '../translations/TranslationService';
 
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../util/logging.js';
+
 // complete the action on the item, i.e. checkout, hold, or view sample
 export async function completeAction(id, actionType, patronId, formatId = '', sampleNumber = '', pickupBranch = '', sublocation = '', url, volumeId = '', holdType = '', holdNotificationPreferences, variationId = '', bibId = '') {
-     console.log("Completing action " + actionType);
+     logDebugMessage("Completing action " + actionType);
      const recordId = id.split(':');
      const source = recordId[0];
      let itemId = recordId[1];
@@ -23,8 +25,8 @@ export async function completeAction(id, actionType, patronId, formatId = '', sa
           const tmp = await AsyncStorage.getItem('@patronProfile');
           patronProfile = JSON.parse(tmp);
      } catch (e) {
-          console.log('Unable to fetch patron profile in grouped work from async storage');
-          console.log(e);
+          logErrorMessage('Unable to fetch patron profile in grouped work from async storage');
+          logErrorMessage(e);
      }
 
      if (actionType.includes('checkout')) {
@@ -93,7 +95,8 @@ export async function checkoutItem(url, itemId, source, patronId, barcode = '', 
           return responseData.result;
      } else {
           popToast(getTermFromDictionary('en', 'error_no_server_connection'), getTermFromDictionary('en', 'error_no_library_connection'), 'error');
-          console.log(response);
+          logErrorMessage("No response from server while checking out item");
+          logErrorMessage(response);
      }
 }
 
@@ -184,15 +187,17 @@ export async function placeHold(url, itemId, source, patronId, pickupBranch, sub
           auth: createAuthTokens(),
           params: setParams,
      });
-     //console.log("Placing Hold");
-     //console.log(setParams);
+     logDebugMessage("Placing Hold");
+     logDebugMessage(setParams);
      const response = await api.post('/UserAPI?method=placeHold', postBody);
      if (response.ok) {
-          //console.log(response.data.result);
+          logDebugMessage("Place Hold result");
+          logDebugMessage(response.data.result);
           return response.data.result;
      } else {
           popToast(getTermFromDictionary('en', 'error_no_server_connection'), getTermFromDictionary('en', 'error_no_library_connection'), 'error');
-          console.log(response);
+          logErrorMessage("No server connection while placing hold");
+          logErrorMessage(response);
      }
 }
 
@@ -217,11 +222,13 @@ export async function overDriveSample(url, formatId, itemId, sampleNumber, langu
           const result = response.data;
           const accessUrl = result.result.url;
 
-          console.log(response);
+          logDebugMessage("Response loading OverDrive Preview");
+          logDebugMessage(response);
 
           await WebBrowser.openBrowserAsync(accessUrl)
                .then((res) => {
-                    console.log(res);
+                    logDebugMessage("Response from opening browser for OverDrive Preview");
+                    logDebugMessage(res);
                })
                .catch(async (err) => {
                     if (err.message === 'Another WebBrowser is already being presented.') {
@@ -229,13 +236,15 @@ export async function overDriveSample(url, formatId, itemId, sampleNumber, langu
                               WebBrowser.dismissBrowser();
                               await WebBrowser.openBrowserAsync(accessUrl)
                                    .then((response) => {
-                                        console.log(response);
+                                        logDebugMessage("Response from reopening browser");
+                                        logDebugMessage(response);
                                    })
                                    .catch(async (error) => {
-                                        console.log('Unable to close previous browser session.');
+                                        logWarnMessage('Unable to close previous browser session.');
                                    });
                          } catch (error) {
-                              console.log('Really borked.');
+                              logErrorMessage('Error displaying browser for OverDrive Preview.');
+                              logErrorMessage(error);
                          }
                     } else {
                          popToast(getTermFromDictionary('en', 'error_no_open_resource'), getTermFromDictionary('en', 'error_device_block_browser'), 'error');
@@ -243,7 +252,8 @@ export async function overDriveSample(url, formatId, itemId, sampleNumber, langu
                });
      } else {
           popToast(getTermFromDictionary('en', 'error_no_server_connection'), getTermFromDictionary('en', 'error_no_library_connection'), 'error');
-          console.log(response);
+          logErrorMessage("No server connection while getting OverDrive Preview");
+          logErrorMessage(response);
      }
 }
 
@@ -251,7 +261,8 @@ export async function openSideLoad(redirectUrl) {
      if (redirectUrl) {
           await WebBrowser.openBrowserAsync(redirectUrl)
                .then((res) => {
-                    console.log(res);
+                    logDebugMessage("Response from opening side load");
+                    logDebugMessage(res);
                })
                .catch(async (err) => {
                     if (err.message === 'Another WebBrowser is already being presented.') {
@@ -259,24 +270,27 @@ export async function openSideLoad(redirectUrl) {
                               WebBrowser.dismissBrowser();
                               await WebBrowser.openBrowserAsync(redirectUrl)
                                    .then((response) => {
-                                        console.log(response);
+                                        logDebugMessage("Response from reopening browser");
+                                                                                logDebugMessage(response);
                                    })
                                    .catch(async (error) => {
-                                        console.log('Unable to close previous browser session.');
+                                        logWarnMessage('Unable to close previous browser session.');
                                         popToast(getTermFromDictionary('en', 'error_no_open_resource'), getTermFromDictionary('en', 'error_device_block_browser'), 'error');
                                    });
                          } catch (error) {
-                              console.log('Tried to open again but still unable');
+                              logErrorMessage('Tried to open again but still unable');
+                              logErrorMessage(error);
                               popToast(getTermFromDictionary('en', 'error_no_open_resource'), getTermFromDictionary('en', 'error_device_block_browser'), 'error');
                          }
                     } else {
-                         console.log('Unable to open browser window.');
+                         logWarnMessage('Unable to open browser window.');
                          popToast(getTermFromDictionary('en', 'error_no_open_resource'), getTermFromDictionary('en', 'error_device_block_browser'), 'error');
                     }
                });
      } else {
           popToast(getTermFromDictionary('en', 'error_no_open_resource'), getTermFromDictionary('en', 'error_no_valid_url'), 'error');
-          console.log(response);
+          logErrorMessage("No server connection while getting SideLoad to display");
+          logErrorMessage(response);
      }
 }
 
@@ -293,12 +307,12 @@ export async function getItemDetails(url, id, format) {
           },
      });
      const response = await api.post('/ItemAPI?method=getItemDetails', postBody);
-     //console.log(response.config);
      if (response.ok) {
           return response.data;
      } else {
           popToast(getTermFromDictionary('en', 'error_no_server_connection'), getTermFromDictionary('en', 'error_no_library_connection'), 'error');
-          console.log(response);
+          logErrorMessage("No server connection while getting Item Details");
+          logErrorMessage(response);
      }
 }
 
@@ -329,12 +343,15 @@ export async function submitVdxRequest(url, request) {
                return response.data.result;
           } else {
                popAlert(response.data.title ?? 'Unknown Error', response.data.message, 'error');
+               logErrorMessage("Error Submitting VDX Request");
+               logErrorMessage(response.data);
                return response.data;
           }
      } else {
           const problem = problemCodeMap(response.problem);
           popAlert(problem.title, problem.message, 'error');
-          console.log(response);
+          logErrorMessage("Error Submitting VDX Request");
+          logErrorMessage(response);
      }
 }
 
@@ -355,12 +372,12 @@ export async function submitLocalIllRequest(url, request) {
           auth: createAuthTokens(),
           params: params,
      });
-     console.log("Submitting Local ILL Request " + url + "/API/UserAPI?method=submitLocalIllRequest for catalog key " + request.catalogKey);
-     console.log(params)
+     logDebugMessage("Submitting Local ILL Request " + url + "/API/UserAPI?method=submitLocalIllRequest for catalog key " + request.catalogKey);
+     logDebugMessage(params)
      const response = await api.post('/UserAPI?method=submitLocalIllRequest', postBody);
      if (response.ok) {
-          console.log("Local ILL Response");
-          console.dir(response.data);
+          logDebugMessage("Local ILL Response");
+          logDebugMessage(response.data);
           if (response.data.result?.success === true) {
                popAlert(response.data.result.title, response.data.result.message, 'success');
                return response.data.result;
@@ -369,9 +386,9 @@ export async function submitLocalIllRequest(url, request) {
                return response.data.result;
           }
      } else {
-          console.log("Did not get a good response submitting local ILL request");
+          logWarnMessage("Did not get a good response submitting local ILL request");
           const problem = problemCodeMap(response.problem);
           popAlert(problem.title, problem.message, 'error');
-          console.log(response);
+          logWarnMessage(response);
      }
 }

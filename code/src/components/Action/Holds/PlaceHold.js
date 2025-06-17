@@ -14,6 +14,8 @@ export const PlaceHold = (props) => {
           id,
           type,
           volumeInfo,
+          volumeId,
+          volumeName,
           title,
           record,
           holdTypeForFormat,
@@ -77,7 +79,7 @@ export const PlaceHold = (props) => {
      let promptForHoldNotifications = user.promptForHoldNotifications ?? false;
 
      let loadHoldPrompt = false;
-     if (volumeInfo.numItemsWithVolumes >= 1 || _.size(accounts) > 0 || _.size(locations) > 1 || promptForHoldNotifications || holdTypeForFormat === 'item' || holdTypeForFormat === 'either' || (shouldPromptAlternateLibraryCard && !userHasAlternateLibraryCard)) {
+     if ((volumeInfo.numItemsWithVolumes >= 1 && _.isEmpty(volumeId)) || _.size(accounts) > 0 || _.size(locations) > 1 || promptForHoldNotifications || holdTypeForFormat === 'item' || holdTypeForFormat === 'either' || (shouldPromptAlternateLibraryCard && !userHasAlternateLibraryCard)) {
           loadHoldPrompt = true;
      }
 
@@ -108,6 +110,8 @@ export const PlaceHold = (props) => {
                     holdTypeForFormat={holdTypeForFormat}
                     variationId={variationId}
                     volumeInfo={volumeInfo}
+                    volumeId={volumeId}
+                    volumeName={volumeName}
                     prevRoute={prevRoute}
                     isEContent={false}
                     setResponseIsOpen={setResponseIsOpen}
@@ -144,7 +148,7 @@ export const PlaceHold = (props) => {
                          maxWidth="100%"
                          onPress={async () => {
                               setLoading(true);
-                              await completeAction(record, type, user.id, null, null, pickupLocation, sublocation, library.baseUrl, null, 'default').then(async (ilsResponse) => {
+                              await completeAction(record, type, user.id, null, null, pickupLocation, sublocation, library.baseUrl, volumeId, 'default').then(async (ilsResponse) => {
                                    setResponse(ilsResponse);
 
                                    if (ilsResponse?.confirmationNeeded && ilsResponse.confirmationNeeded) {

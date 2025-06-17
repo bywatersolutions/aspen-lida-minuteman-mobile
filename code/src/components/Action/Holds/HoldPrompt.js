@@ -17,6 +17,8 @@ import { SelectVolume } from './SelectVolume';
 import { SelectNewHoldSublocation } from './SelectNewHoldSublocation';
 import { PATRON } from '../../../util/loadPatron';
 
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../../util/logging.js';
+
 export const HoldPrompt = (props) => {
      const queryClient = useQueryClient();
      const {
@@ -25,6 +27,8 @@ export const HoldPrompt = (props) => {
           title,
           action,
           volumeInfo,
+          volumeId,
+          volumeName,
           holdTypeForFormat,
           variationId,
           prevRoute,
@@ -70,7 +74,7 @@ export const HoldPrompt = (props) => {
      });
 
      let isPlacingHold = false;
-     if (_.isObject(action)) {
+     if (typeof action === 'string') {
           isPlacingHold = action.includes('hold');
      }
 
@@ -109,7 +113,12 @@ export const HoldPrompt = (props) => {
           typeOfHold = holdTypeForFormat;
      }
 
-     if (volumeInfo.numItemsWithVolumes >= 1) {
+     const [volume, setVolume] = React.useState('');
+
+     if (!_.isEmpty(volumeId)){
+          typeOfHold = 'volume';
+          promptForHoldType = false;
+     }else if (volumeInfo.numItemsWithVolumes >= 1) {
           typeOfHold = 'item';
           promptForHoldType = true;
           if (volumeInfo.majorityOfItemsHaveVolumes) {
@@ -127,7 +136,6 @@ export const HoldPrompt = (props) => {
      }
 
      const [holdType, setHoldType] = React.useState(typeOfHold);
-     const [volume, setVolume] = React.useState('');
      const [item, setItem] = React.useState('');
 
      let cardLabel = getTermFromDictionary(language, 'alternate_library_card');
@@ -260,8 +268,6 @@ export const HoldPrompt = (props) => {
           }
      }
 
-     //console.log("Default pickup location " + pickupLocation);
-
      const [location, setLocation] = React.useState(pickupLocation);
      const [sublocation, setSublocation] = React.useState(null);
 
@@ -354,9 +360,8 @@ export const HoldPrompt = (props) => {
                                              setLoading(true);
                                              await updateCard();
                                              await completeAction(id, action, activeAccount, '', '', location, sublocation, library.baseUrl, volume, holdType, holdNotificationPreferences, item).then(async (result) => {
-                                                  if (__DEV__) {
-                                                       console.log("Completed Action - Hold Prompt footer");
-                                                  }
+                                                  logDebugMessage("Completed Action - Hold Prompt footer");
+
                                                   setResponse(result);
                                                   if (result) {
                                                        if (result.success === true || result.success === 'true') {
@@ -455,7 +460,7 @@ export const HoldPrompt = (props) => {
                                    />
                               ) : null}
                               {!isFetching && (holdTypeForFormat === 'either' || holdTypeForFormat === 'item') ? <SelectItemHold theme={theme} id={id} item={item} setItem={setItem} language={language} data={data} holdType={holdType} setHoldType={setHoldType} holdTypeForFormat={holdTypeForFormat} url={library.baseUrl} showModal={showModal} textColor={textColor} /> : null}
-                              {promptForHoldType || holdType === 'volume' ? <SelectVolume theme={theme} id={id} language={language} volume={volume} setVolume={setVolume} promptForHoldType={promptForHoldType} holdType={holdType} setHoldType={setHoldType} showModal={showModal} url={library.baseUrl} textColor={textColor} /> : null}
+                              {promptForHoldType || (holdType === 'volume' && _.isEmpty(volumeId)) ? <SelectVolume theme={theme} id={id} language={language} volume={volume} setVolume={setVolume} promptForHoldType={promptForHoldType} holdType={holdType} setHoldType={setHoldType} showModal={showModal} url={library.baseUrl} textColor={textColor} /> : null}
                               {_.isArray(locations) && _.size(locations) > 1 && !isEContent ? (
                                    <FormControl mt="$1">
                                         <FormControlLabel>
@@ -552,17 +557,14 @@ export const HoldPrompt = (props) => {
                                              isDisabled={loading}
                                              onPress={async () => {
                                                   setLoading(true);
-                                                  await completeAction(id, action, activeAccount, '', '', location, sublocation, library.baseUrl, volume, holdType, holdNotificationPreferences, item).then(async (result) => {
+                                                  await completeAction(id, action, activeAccount, '', '', location, sublocation, library.baseUrl, volumeId, holdType, holdNotificationPreferences, item).then(async (result) => {
                                                        setResponse(result);
-                                                       if (__DEV__) {
-                                                            console.log("Completed Action Hold Prompt Alternate Library Card");
-                                                       }
+                                                       logDebugMessage("Completed Action Hold Prompt Alternate Library Card");
+
                                                        if (result) {
                                                             if (result.success === true || result.success === 'true') {
-                                                                 if (__DEV__) {
-                                                                      console.log("Placing succeeded, invalidating queries for user " + user.id + " baseUrl " + library.baseUrl + " language " + language);
-                                                                      console.log(result);
-                                                                 }
+                                                                 logDebugMessage("Placing succeeded, invalidating queries for user " + user.id + " baseUrl " + library.baseUrl + " language " + language);
+                                                                 logDebugMessage(result);
                                                                  queryClient.invalidateQueries({ queryKey: ['holds', user.id, library.baseUrl, language] });
                                                                  queryClient.invalidateQueries({ queryKey: ['checkouts', user.id, library.baseUrl, language] });
                                                                  queryClient.invalidateQueries({ queryKey: ['user', library.baseUrl, language] });
@@ -573,14 +575,10 @@ export const HoldPrompt = (props) => {
                                                                       queryClient.invalidateQueries({ queryKey: ['checkouts', user.id, library.baseUrl, language] });
                                                                       queryClient.invalidateQueries({ queryKey: ['user', library.baseUrl, language] });
                                                                  }, 45 * 1000);
-                                                                  if (__DEV__) {
-                                                                      console.log("Query invalidation complete");
-                                                                  }
+                                                                  logDebugMessage("Query invalidation complete");
                                                             }else{
-                                                                 if (__DEV__) {
-                                                                      console.log("Placing hold failed");
-                                                                      console.log(result);
-                                                                 }
+                                                                 logInfoMessage("Placing hold failed");
+                                                                 logInfoMessage(result);
                                                             }
 
                                                             if (result?.confirmationNeeded && result.confirmationNeeded === true) {
@@ -625,16 +623,13 @@ export const HoldPrompt = (props) => {
                                                                  setHoldItemSelectIsOpen(true);
                                                             //Decided to hold off on redirecting to ILL Request for failed holds for now and just show a better message
                                                             } else if (result?.needsIllRequest && result.needsIllRequest === true) {
-                                                                 console.log("Need to show local ILL form");
-                                                                 console.log("Response is:");
-                                                                 console.log(response);
+                                                                 logDebugMessage("Need to show local ILL form");
+                                                                 logDebugMessage(response);
                                                             } {
                                                                  setResponseIsOpen(true);
                                                             }
                                                        }else{
-                                                            if (__DEV__) {
-                                                                 console.log("Did not get a good reasult");
-                                                            }
+                                                            logWarnMessage("Did not get a good result completing action");
                                                        }
                                                   });
                                              }}>

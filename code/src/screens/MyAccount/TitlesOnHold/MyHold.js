@@ -17,13 +17,13 @@ import { SelectPickupLocation } from './SelectPickupLocation';
 import { SelectThawDate } from './SelectThawDate.js';
 import { PATRON } from '../../../util/loadPatron';
 
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../../util/logging.js';
+
 const blurhash = 'MHPZ}tt7*0WC5S-;ayWBofj[K5RjM{ofM_';
 
 export const MyHold = (props) => {
      const hold = props.data;
      const holdSource = props.holdSource
-     //console.log("Hold raw data");
-     //console.log(hold);
      const resetGroup = props.resetGroup;
      const pickupLocations = props.pickupLocations;
      const sublocations = PATRON.sublocations;
@@ -48,7 +48,6 @@ export const MyHold = (props) => {
                if (hold.holdQueueLength && hold.position) {
                     tmp = tmp.replace('%1%', hold.position);
                     tmp = tmp.replace('%2%', hold.holdQueueLength);
-                    //console.log(tmp);
                     setUsesHoldPosition(true);
                     setHoldPosition(tmp);
                }
@@ -304,11 +303,10 @@ export const MyHold = (props) => {
      };
 
      if (holdSource != 'all' && holdSource != hold.source) {
-          console.log("Hiding hold that is the wrong source " + holdSource);
+          logDebugMessage("Hiding hold that is the wrong source " + holdSource);
           return null;
      }
 
-     //console.log("Out of hold group message for " + hold.title + " is " + hold.outOfHoldGroupMessage);
      return (
           <>
                <Pressable onPress={onOpen} borderBottomWidth="1" _dark={{ borderColor: 'gray.600' }} borderColor="coolGray.200" pl="4" pr="20" py="2">

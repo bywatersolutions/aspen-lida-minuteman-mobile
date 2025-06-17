@@ -15,6 +15,8 @@ import {getPatronCheckedOutItems, getPatronHolds, sortHolds, setSortPreferences}
 import { getPickupLocations } from '../../../util/loadLibrary';
 import { ManageAllHolds, ManageSelectedHolds, MyHold } from './MyHold';
 
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../../util/logging.js';
+
 export const MyHolds = () => {
      const isFetchingHolds = useIsFetching({ queryKey: ['holds'] });
      const queryClient = useQueryClient();
@@ -74,7 +76,6 @@ export const MyHolds = () => {
      const togglePendingSort = async (value) => {
           updateUserHoldPendingSortMethod(value);
           const sortedHolds = sortHolds(holds, value, userHoldReadySortMethod);
-          //console.log(sortedHolds[1]);
           setLoading(true);
           queryClient.setQueryData(['holds', library.baseUrl, language, userHoldReadySortMethod, userHoldPendingSortMethod, 'all'], sortedHolds);
           setLoading(false);
@@ -460,7 +461,7 @@ export const MyHolds = () => {
      };
 
      const displaySectionHeader = (title) => {
-          if (__DEV__) { console.log(title); }
+          logDebugMessage("Display Holds section " + title);
           if (title === 'Pending') {
                return (
                     <Box bgColor="warmGray.50" borderBottomWidth="1" _dark={{ borderColor: 'gray.600', bgColor: 'coolGray.800' }} borderColor="coolGray.200" flexWrap="nowrap" maxWidth="100%" safeArea={2}>
