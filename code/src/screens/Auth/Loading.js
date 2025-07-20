@@ -32,7 +32,7 @@ Notifications.setNotificationHandler({
 });
 
 export const LoadingScreen = () => {
-     const linkingUrl = Linking.useURL();
+     const linkingUrl = Linking.useLinkingURL();
      const linkTo = useLinkTo();
      const navigation = useNavigation();
      const queryClient = useQueryClient();
