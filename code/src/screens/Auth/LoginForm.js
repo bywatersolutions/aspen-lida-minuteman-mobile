@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useQuery } from '@tanstack/react-query';
 import { create } from 'apisauce';
 import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
@@ -12,19 +11,19 @@ import React, { useRef } from 'react';
 // custom components and helper files
 import { AuthContext } from '../../components/navigation';
 import { DisplayMessage } from '../../components/Notifications';
-import { BrowseCategoryContext, LanguageContext, LibraryBranchContext, LibrarySystemContext, UserContext } from '../../context/initialContext';
+import { LanguageContext, LibrarySystemContext } from '../../context/initialContext';
 import { navigate } from '../../helpers/RootNavigator';
 import { getTermFromDictionary } from '../../translations/TranslationService';
-import { getCatalogStatus, getLibraryInfo, getLibraryLanguages } from '../../util/api/library';
+import { getCatalogStatus } from '../../util/api/library';
 import { getLocationInfo } from '../../util/api/location';
-import { loginToLiDA, reloadProfile, validateUser } from '../../util/api/user';
-import { createAuthTokens, decodeHTML, getHeaders, stripHTML } from '../../util/apiAuth';
+import { loginToLiDA } from '../../util/api/user';
+import { createAuthTokens, getHeaders, stripHTML } from '../../util/apiAuth';
 import { GLOBALS } from '../../util/globals';
-import { formatDiscoveryVersion, LIBRARY, reloadBrowseCategories } from '../../util/loadLibrary';
+import { formatDiscoveryVersion, LIBRARY } from '../../util/loadLibrary';
 import { PATRON } from '../../util/loadPatron';
 import { ResetExpiredPin } from './ResetExpiredPin';
 
-import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../util/logging.js';
+import { logDebugMessage, logInfoMessage, logWarnMessage } from '../../util/logging.js';
 
 export const GetLoginForm = (props) => {
      const navigation = useNavigation();
@@ -50,11 +49,8 @@ export const GetLoginForm = (props) => {
      // make ref to move the user to next input field
      const passwordRef = useRef();
      const { signIn } = React.useContext(AuthContext);
-     const { updateLibrary, updateCatalogStatus, catalogStatus } = React.useContext(LibrarySystemContext);
-     const { updateLocation } = React.useContext(LibraryBranchContext);
-     const { updateUser } = React.useContext(UserContext);
-     const { updateBrowseCategories } = React.useContext(BrowseCategoryContext);
-     const { language, updateLanguage, updateLanguages } = React.useContext(LanguageContext);
+     const { updateCatalogStatus, catalogStatus } = React.useContext(LibrarySystemContext);
+     const { updateLanguage } = React.useContext(LanguageContext);
      const patronsLibrary = props.selectedLibrary;
 
      const { usernameLabel, passwordLabel, allowBarcodeScanner, allowCode39 } = props;
