@@ -107,22 +107,22 @@ export const HoldNotificationPreferences = (props) => {
                                                             }
                                                        })
                                                   ) : (
-                                                       <SelectInput placeholder="Select a Carrier" />
+                                                       <SelectInput placeholder="Select a Carrier" color={textColor} />
                                                   )}
                                                   <SelectIcon mr="$3" as={ChevronDownIcon} color={textColor} />
                                              </SelectTrigger>
                                              <SelectPortal useRNModal={true}>
                                                   <SelectBackdrop />
-                                                  <SelectContent p="$5">
+                                                  <SelectContent bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                        <SelectDragIndicatorWrapper>
                                                             <SelectDragIndicator />
                                                        </SelectDragIndicatorWrapper>
                                                        <SelectScrollView>
                                                             {_.map(smsCarriers, function (carrier, index, array) {
                                                                  if (index === smsCarrier) {
-                                                                      return <SelectItem key={index} label={carrier} value={index} bgColor={theme['colors']['tertiary']['300']} />;
+                                                                      return <SelectItem key={index} label={carrier} value={index}  bgColor={theme['colors']['tertiary']['300']} sx={{ _text: { color: theme['colors']['tertiary']['500-text'] } }} />;
                                                                  }
-                                                                 return <SelectItem key={index} label={carrier} value={index} />;
+                                                                 return <SelectItem key={index} label={carrier} value={index} bgColor={smsCarrier === (index) ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: smsCarrier === (index) ? theme['colors']['tertiary']['500-text'] : textColor } }} />;
                                                             })}
                                                        </SelectScrollView>
                                                   </SelectContent>

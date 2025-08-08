@@ -120,14 +120,19 @@ export const SelectPickupLocation = (props) => {
                                              onValueChange={(itemValue) => setLocation(itemValue)}>
 
                                              <SelectTrigger variant="outline" size="md">
-                                                  <SelectInput color={textColor} placeholder="Select option" />
-                                                  <SelectIcon mr="$3">
-                                                       <Icon color={textColor} as={ChevronDownIcon} />
-                                                  </SelectIcon>
+                                                  {locations.map((item, index) => {
+                                                       const locationId = item.locationId;
+                                                       const code = item.code;
+                                                       const id = locationId.concat('_', code);
+                                                       if (id === location) {
+                                                            return <SelectInput value={item.name} color={textColor} />;
+                                                       }
+                                                  })}
+                                                  <SelectIcon mr="$3" as={ChevronDownIcon} color={textColor} />
                                              </SelectTrigger>
                                              <SelectPortal useRNModal={true}>
                                                   <SelectBackdrop />
-                                                  <SelectContent>
+                                                  <SelectContent  bgColor={colorMode === 'light' ? theme['colors']['warmGray']['50'] : theme['colors']['coolGray']['700']}>
                                                        <SelectDragIndicatorWrapper>
                                                             <SelectDragIndicator />
                                                        </SelectDragIndicatorWrapper>
@@ -135,7 +140,7 @@ export const SelectPickupLocation = (props) => {
                                                             const locationId = item.locationId;
                                                             const code = item.code;
                                                             const id = locationId.concat('_', code);
-                                                            return <SelectItem value={id} label={item.name} />;
+                                                            return <SelectItem value={id} label={item.name}  bgColor={location === (id) ? theme['colors']['tertiary']['300'] : ''} sx={{ _text: { color: location === (id) ? theme['colors']['tertiary']['500-text'] : textColor } }}/>;
                                                        })}
                                                   </SelectContent>
                                              </SelectPortal>
