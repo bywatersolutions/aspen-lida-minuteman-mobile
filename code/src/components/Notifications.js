@@ -3,7 +3,8 @@ import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import _ from 'lodash';
-import { Alert, CloseIcon, HStack, IconButton, Text, VStack } from 'native-base';
+import { Alert, AlertIcon, AlertText, Button, ButtonText, HStack, Icon, Pressable, Text, VStack, CloseIcon } from '@gluestack-ui/themed';
+import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { Platform } from 'react-native';
 import { getTermFromDictionary } from '../translations/TranslationService';
@@ -295,15 +296,11 @@ export async function createChannelsAndCategories() {
 export function showILSMessage(type, message, index = 0) {
      const formattedMessage = stripHTML(message);
      return (
-          <Alert maxW="95%" status={type} colorScheme={type} mb={1} ml={2} key={index}>
-               <HStack flexShrink={1} space={2} alignItems="center" justifyContent="space-between">
-                    <HStack flexShrink={1} space={2} alignItems="center">
-                         <Alert.Icon />
-                         <Text fontSize="xs" fontWeight="medium" color="coolGray.800" maxW="90%">
-                              {formattedMessage}
-                         </Text>
-                    </HStack>
-               </HStack>
+          <Alert action={type} maxW="95%" mb="$1" ml="$2" key={index}>
+               <AlertIcon as={MaterialIcons} name="info" />
+               <AlertText size="xs" fontWeight="$medium">
+                    {formattedMessage}
+               </AlertText>
           </Alert>
      );
 }
@@ -311,13 +308,11 @@ export function showILSMessage(type, message, index = 0) {
 /** status/colorScheme options: success, error, info, warning **/
 export const DisplayMessage = (props) => {
      return (
-          <Alert status={props.type} colorScheme={props.type} mb={2}>
-               <HStack flexShrink={1} space={5} alignItems="center" justifyContent="space-between" px={4}>
-                    <Alert.Icon />
-                    <Text fontSize="xs" fontWeight="medium" color="coolGray.800">
-                         {props.message}
-                    </Text>
-               </HStack>
+          <Alert action={props.type} mb="$2">
+               <AlertIcon as={MaterialIcons} name="info" />
+               <AlertText size="xs" fontWeight="$medium">
+                    {props.message}
+               </AlertText>
           </Alert>
      );
 };
@@ -339,23 +334,20 @@ export const DisplayAndroidEndOfSupportMessage = (props) => {
      const setIsOpen = props.setIsOpen;
      const language = props.language;
      return (
-          <Alert maxW="100%" status="error" colorScheme="error" mb={3} index={-1}>
+          <Alert maxW="100%" action="error" mb="$3">
                <VStack space={2} flexShrink={1} w="100%">
                     <HStack flexShrink={1} alignItems="flex-start" space={2} justifyContent="space-between">
                          <HStack space={2} flexShrink={1} pr={3}>
-                              <Text fontSize="sm" mb={-1}>
+                              <Text size="sm" mb={-1}>
                                    {getTermFromDictionary(language, 'android_end_of_life')}
                               </Text>
                          </HStack>
-                         <IconButton
-                              mt={-2}
-                              variant="unstyled"
-                              _focus={{
-                                   borderWidth: 0,
-                              }}
-                              icon={<CloseIcon size="3" />}
+                         <Pressable
+                              mt="-$2"
                               onPress={() => setIsOpen(false)}
-                         />
+                         >
+                              <Icon as={CloseIcon} size="sm" />
+                         </Pressable>
                     </HStack>
                </VStack>
           </Alert>
@@ -371,62 +363,50 @@ export const DisplaySystemMessage = (props) => {
      // return a custom alert if the system message style is 'none'
      if (props.style === '') {
           return (
-               <Alert maxW="100%" status="info" backgroundColor="coolGray.200" mb={2} index={props.id}>
+               <Alert maxW="100%" action="info" bgColor="$coolGray200" mb="$2">
                     <VStack space={2} flexShrink={1} w="100%">
                          <HStack flexShrink={1} alignItems="flex-start" space={2} justifyContent="space-between">
                               <HStack space={2} flexShrink={1} pr={3}>
-                                   <Text fontSize="sm" color="coolGray.800" mb={-1}>
+                                   <Text size="sm" color="coolGray.800" mb={-1}>
                                         {props.message}
                                    </Text>
                               </HStack>
-                              <IconButton
+                              <Pressable
                                    onPress={async () => {
                                         await hideSystemMessage(props.all, props.id, props.dismissable, props.url).then((result) => {
                                              queryClient.setQueryData(['system_messages', props.url], result);
                                              updateSystemMessages(result);
                                         });
                                    }}
-                                   mt={-2}
-                                   variant="unstyled"
-                                   _focus={{
-                                        borderWidth: 0,
-                                   }}
-                                   icon={<CloseIcon size="3" />}
-                                   _icon={{
-                                        color: 'coolGray.600',
-                                   }}
-                              />
+                                   mt="-$2"
+                              >
+                                   <Icon as={CloseIcon} size="sm" color="$coolGray600" />
+                              </Pressable>
                          </HStack>
                     </VStack>
                </Alert>
           );
      }
      return (
-          <Alert maxW="100%" status={style} colorScheme={scheme} mb={2} index={props.id}>
+          <Alert maxW="100%" action={style} mb="$2">
                <VStack space={2} flexShrink={1} w="100%">
                     <HStack flexShrink={1} alignItems="flex-start" space={2} justifyContent="space-between">
                          <HStack space={2} flexShrink={1} pr={3}>
-                              <Text fontSize="sm" color="coolGray.800" mb={-1}>
+                              <Text size="sm" color="coolGray.800" mb={-1}>
                                    {props.message}
                               </Text>
                          </HStack>
-                         <IconButton
+                         <Pressable
                               onPress={async () => {
                                    await hideSystemMessage(props.all, props.id, props.dismissable, props.url).then((result) => {
                                         queryClient.setQueryData(['system_messages', props.url], result);
                                         updateSystemMessages(result);
                                    });
                               }}
-                              mt={-2}
-                              variant="unstyled"
-                              _focus={{
-                                   borderWidth: 0,
-                              }}
-                              icon={<CloseIcon size="3" />}
-                              _icon={{
-                                   color: 'coolGray.600',
-                              }}
-                         />
+                              mt="-$2"
+                         >
+                              <Icon as={CloseIcon} size="sm" color="$coolGray600" />
+                         </Pressable>
                     </HStack>
                </VStack>
           </Alert>

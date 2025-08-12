@@ -386,7 +386,7 @@ export const LoadingScreen = () => {
                <Center flex={1} px="$3" w="100%">
                     <Box w="90%" maxW={400}>
                          <VStack>
-                              <Heading pb="$5" color="$primary500" fontSize="$md">
+                              <Heading pb="$5" color="$primary500" size="md">
                                    {loadingText}
                               </Heading>
                               <Progress value={progress} w="100%" h="$3" size="lg">

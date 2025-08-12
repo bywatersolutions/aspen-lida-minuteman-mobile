@@ -300,7 +300,7 @@ export const SelfCheckOut = () => {
                         </Center>
                     )}
                </Center>
-               <Heading fontSize="$md" pb="$2" color={textColor}>
+               <Heading size="md" pb="$2" color={textColor}>
                     {getTermFromDictionary(language, 'checked_out_during_session')}
                </Heading>
                {isProcessingCheckout ? (

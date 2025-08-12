@@ -29,7 +29,7 @@ export function loadingSpinner(message = '') {
      );
 }
 
-export const LoadingSpinner = ({ message }) => {
+export const LoadingSpinner = ({ message = '' }) => {
      const { colorMode, theme, textColor } = React.useContext(ThemeContext);
      if (message && message !== '') {
           return (
