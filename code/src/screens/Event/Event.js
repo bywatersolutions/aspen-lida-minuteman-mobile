@@ -577,6 +577,7 @@ const getAddToYourEvents = (id, source) => {
 
 const getInYourEvents = () => {
      const { language } = React.useContext(LanguageContext);
+     const { theme } = React.useContext(ThemeContext);
      return (
           <Button mb="$2" bgColor={theme['colors']['tertiary']['500']} onPress={() => navigateStack('AccountScreenTab', 'MyEvents')}>
                <ButtonText color={theme['colors']['tertiary']['500-text']}>{getTermFromDictionary(language, 'in_your_events')}</ButtonText>

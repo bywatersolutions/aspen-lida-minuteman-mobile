@@ -293,8 +293,8 @@ export const FiltersScreen = () => {
                                         value={searchTerm}
                                         _stack={{ style: {
                                              outlineWidth: 0,
-                                                  borderWidth: 1
-                                             } }}
+                                             borderWidth: 1
+                                        } }}
                                         InputLeftElement={
                                              <Icon
                                                   as={<Ionicons name="search" />}

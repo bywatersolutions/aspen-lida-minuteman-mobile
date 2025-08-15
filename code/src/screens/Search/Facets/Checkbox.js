@@ -1,37 +1,31 @@
 import { Checkbox, HStack, Pressable, Text } from 'native-base';
 import React from 'react';
+import { logDebugMessage, logInfoMessage, logWarnMessage, logErrorMessage } from '../../../util/logging.js';
 
-export default function Facet_Checkbox({ data, category, values = [], updateLocalValues }) {
+export default function Facet_Checkbox({ data, category, values = [], updateCheckboxFacet }) {
      const isChecked = values.includes(data.value);
-     const handlePress = () => {
-          const newValues = isChecked
-               ? values.filter(v => v !== data.value)
-               : [...values, data.value];
-          updateLocalValues(category, newValues);
+     const handleChange = (newValue) => {
+          logDebugMessage("Clicked on " + data.value + " isChecked is " + isChecked + " newValue is " + newValue);
+          updateCheckboxFacet(category, data.value, newValue);
      };
 
      return (
-          <Pressable
-               py={4}
-               hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-               onPress={handlePress}
-          >
-               <HStack alignItems="center" space={3}>
-                    <Checkbox
-                         value={data.value}
-                         accessibilityLabel={data.display}
-                         isChecked={isChecked}
-                         onChange={handlePress}    // <-- This makes Checkbox itself clickable
+          <HStack alignItems="center" px={3} py={4}>
+               <Checkbox
+                    value={data.value}
+                    accessibilityLabel={data.display}
+                    isChecked={isChecked}
+                    onChange={(value)=>{
+                       handleChange(value);
+                    }}
+               >
+                    <Text
+                         _light={{ color: 'darkText' }}
+                         _dark={{ color: 'lightText' }}
                     >
-                         <Text
-                              _light={{ color: 'darkText' }}
-                              _dark={{ color: 'lightText' }}
-                              onPress={handlePress}   // <-- This makes the label clickable
-                         >
-                              {data.display}{data.count ? ` (${data.count})` : ''}
-                         </Text>
-                    </Checkbox>
-               </HStack>
-          </Pressable>
+                         {data.display}{data.count ? ` (${data.count})` : ''}
+                    </Text>
+               </Checkbox>
+          </HStack>
      );
 }
