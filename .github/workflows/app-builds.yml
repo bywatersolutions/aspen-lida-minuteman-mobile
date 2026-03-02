@@ -120,7 +120,7 @@ jobs:
         with:
           node-version: "22"
           cache: "yarn"
-          working-directory: ./code
+          cache-dependency-path: "./code/yarn.lock"
 
       - name: 📦 Get yarn cache directory path
         id: yarn-cache-dir-path
