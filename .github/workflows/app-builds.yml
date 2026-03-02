@@ -115,19 +115,19 @@ jobs:
           cp ./deploy/build.json ./code/build.json
           echo "deployment configs copied to code dir"
 
-       - name: 🔧 Enable Corepack
-         run: corepack enable
-
-       - name: 🏗  Setup Node.js
-         uses: actions/setup-node@v4
-         with:
+      - name: 🏗  Setup Node.js
+       uses: actions/setup-node@v4
+       with:
           node-version: "22"
           cache: "yarn"
           cache-dependency-path: "./code/yarn.lock"
 
+      - name: 🔧 Enable Corepack
+        run: corepack enable
+
       - name: 📦 Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
         working-directory: ./code
 
       - name: 📦 Setup yarn cache
