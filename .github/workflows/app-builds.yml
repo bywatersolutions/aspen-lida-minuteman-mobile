@@ -121,6 +121,7 @@ jobs:
           node-version: "22"
           cache: "yarn"
           cache-dependency-path: "./code/yarn.lock"
+          corepack-enabled: true
 
       - name: 📦 Get yarn cache directory path
         id: yarn-cache-dir-path
