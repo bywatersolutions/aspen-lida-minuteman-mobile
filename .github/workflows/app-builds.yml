@@ -207,11 +207,6 @@ jobs:
             echo "metro.config.js not found"
           fi
         working-directory: ./code
-
-      - name: Debug installed plugins
-        run: |
-          ls -la node_modules/expo-secure-store
-        working-directory: ./code
         
       - name: 📱 Build Production AAB
         run: |
