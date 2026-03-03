@@ -207,7 +207,15 @@ jobs:
             echo "metro.config.js not found"
           fi
         working-directory: ./code
-        
+
+      - name: 🔍 Debug / verify modules
+        run: |
+          pwd
+          ls -la
+          ls -la node_modules
+          ls -la node_modules/expo-secure-store
+        working-directory: ./code
+
       - name: 📱 Build Production AAB
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
