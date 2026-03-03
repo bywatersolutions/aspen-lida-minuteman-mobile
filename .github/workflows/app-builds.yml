@@ -212,7 +212,7 @@ jobs:
       - name: 📱 Build Production AAB
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          yarn dlx eas-cli build --platform android --profile production --local --non-interactive --output=./app-prod.aab
+          npx eas-cli build --platform android --profile production --local --non-interactive --output=./app-prod.aab
         env:
           NODE_ENV: production
         working-directory: ./code
@@ -220,14 +220,14 @@ jobs:
       - name: 📱 Build iOS Production
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          yarn dlx eas-cli build --platform ios --profile production --local --non-interactive --output=./app-ios-prod.ipa
+          npx eas-cli build --platform ios --profile production --local --non-interactive --output=./app-ios-prod.ipa
         env:
           NODE_ENV: production
         working-directory: ./code
 
       - name: 🚀 Submit to Play Store
         run: |
-          yarn dlx eas-cli submit -p android --path ./app-prod.aab --non-interactive
+          npx eas-cli submit -p android --path ./app-prod.aab --non-interactive
 #        env:
 #          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 #          GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
@@ -235,7 +235,7 @@ jobs:
 
       - name: 🚀 Submit to App Store
         run: |
-          yarn dlx eas-cli submit -p ios --path ./app-ios-prod.ipa --non-interactive
+          npx eas-cli submit -p ios --path ./app-ios-prod.ipa --non-interactive
 #        env:
 #          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 #          EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
