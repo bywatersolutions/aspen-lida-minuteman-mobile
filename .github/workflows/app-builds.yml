@@ -153,7 +153,7 @@ jobs:
       - name: 🔄 Verify EAS CLI installation
         run: |
           echo "EAS CLI version:"
-          yarn dlx eas-cli --version
+          npx eas-cli --version
 
       - name: 📋 Fix package.json main entry
         run: |
@@ -210,6 +210,11 @@ jobs:
           fi
         working-directory: ./code
 
+      - name: Debug installed plugins
+        run: |
+          ls -la node_modules/expo-secure-store
+        working-directory: ./code
+        
       - name: 📱 Build Production AAB
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
