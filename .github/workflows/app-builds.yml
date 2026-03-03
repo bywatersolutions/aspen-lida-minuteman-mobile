@@ -24,7 +24,6 @@ env:
   GOOGLE_API_KEY_ANDROID: ${{ secrets.GOOGLE_API_KEY_ANDROID }}
   GOOGLE_API_KEY_APPLE: ${{ secrets.GOOGLE_API_KEY_APPLE }}
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-  NODE_OPTIONS: --require ./.pnp.cjs
 
 jobs:
   check-skip:
@@ -218,7 +217,7 @@ jobs:
 
       - name: 📱 Build Production AAB
         run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096 --require ./.pnp.cjs"
           npx eas-cli build --platform android --profile production --local --non-interactive --output=./app-prod.aab
         env:
           NODE_ENV: production
