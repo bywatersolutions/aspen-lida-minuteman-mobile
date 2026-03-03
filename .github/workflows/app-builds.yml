@@ -24,7 +24,7 @@ env:
   GOOGLE_API_KEY_ANDROID: ${{ secrets.GOOGLE_API_KEY_ANDROID }}
   GOOGLE_API_KEY_APPLE: ${{ secrets.GOOGLE_API_KEY_APPLE }}
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-#  NODE_OPTIONS: --openssl-legacy-provider
+  NODE_OPTIONS: --require ./.pnp.cjs
 
 jobs:
   check-skip:
