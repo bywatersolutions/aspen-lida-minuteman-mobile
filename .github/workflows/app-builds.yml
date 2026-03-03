@@ -111,6 +111,7 @@ jobs:
           mkdir -p ./code
           cp ./deploy/app.config.js ./code/app.config.js
           cp ./deploy/eas.json ./code/eas.json
+          cp ./deploy/.yarnrc.yml ./code/.yarnrc.yml
           echo "deployment configs copied to code dir"
 
       - name: 🏗  Setup Node.js
