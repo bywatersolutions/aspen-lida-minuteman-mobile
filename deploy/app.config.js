@@ -1,10 +1,10 @@
 module.exports = () => {
     const version = require('../version.json');
-    const build = require('./build.json');
+    const build = require('../deploy/build.json');
     let versionAsInt = build['build'];
     versionAsInt = parseInt(versionAsInt, 10);
      
-    const app = require('./app.json');
+    const app = require('../deploy/app.json');
 
     const googleApiKeyApple = process.env.GOOGLE_API_KEY_APPLE;
     const googleApiKeyAndroid = process.env.GOOGLE_API_KEY_ANDROID;
