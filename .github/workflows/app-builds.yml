@@ -139,7 +139,6 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           yarn install
-          yarn global add eas-cli@latest
         working-directory: ./code
 
       - name: 📱 Setup EAS build cache
@@ -153,7 +152,7 @@ jobs:
       - name: 🔄 Verify EAS CLI installation
         run: |
           echo "EAS CLI version:"
-          eas --version
+          yarn dlx eas-cli --version
 
       - name: 📋 Fix package.json main entry
         run: |
@@ -213,7 +212,7 @@ jobs:
       - name: 📱 Build Production AAB
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform android --profile production --local --non-interactive --output=./app-prod.aab
+          yarn dlx eas-cli build --platform android --profile production --local --non-interactive --output=./app-prod.aab
         env:
           NODE_ENV: production
         working-directory: ./code
@@ -221,14 +220,14 @@ jobs:
       - name: 📱 Build iOS Production
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform ios --profile production --local --non-interactive --output=./app-ios-prod.ipa
+          yarn dlx eas-cli build --platform ios --profile production --local --non-interactive --output=./app-ios-prod.ipa
         env:
           NODE_ENV: production
         working-directory: ./code
 
       - name: 🚀 Submit to Play Store
         run: |
-          eas submit -p android --path ./app-prod.aab --non-interactive
+          yarn dlx eas-cli submit -p android --path ./app-prod.aab --non-interactive
 #        env:
 #          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 #          GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
@@ -236,7 +235,7 @@ jobs:
 
       - name: 🚀 Submit to App Store
         run: |
-          eas submit -p ios --path ./app-ios-prod.ipa --non-interactive
+          yarn dlx eas-cli submit -p ios --path ./app-ios-prod.ipa --non-interactive
 #        env:
 #          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
 #          EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
