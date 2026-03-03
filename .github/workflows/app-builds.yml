@@ -113,6 +113,7 @@ jobs:
           cp ./deploy/app.config.js ./code/app.config.js
           cp ./deploy/eas.json ./code/eas.json
           cp ./deploy/build.json ./code/build.json
+          cp ./deploy/app.json ./code/app.json
           echo "deployment configs copied to code dir"
 
       - name: 🏗  Setup Node.js
