@@ -210,7 +210,7 @@ jobs:
 
       - name: 📱 Build Production AAB
         run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096 --require ./.pnp.cjs"
+          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
           npx eas-cli build --platform android --profile production --local --non-interactive --output=./app-prod.aab
         env:
           NODE_ENV: production
