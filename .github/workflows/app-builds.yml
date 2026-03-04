@@ -111,6 +111,7 @@ jobs:
         run: |
           mkdir -p "$CURL_HOME"
           echo 'header = "x-bws-external-service ${{ secrets.CF_BYPASS_TOKEN }}"' > "$CURL_HOME/.curlrc"
+          echo 'verbose' >> "$CURL_HOME/.curlrc"
 
       - name: 📁 Copy over local deployment files
         run: |
