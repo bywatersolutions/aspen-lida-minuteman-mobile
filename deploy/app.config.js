@@ -30,7 +30,7 @@ async function downloadImage(url, filename) {
   return filePath;
 }
 
-module.exports = () => {
+module.exports = async () => {
     const version = require('../version.json');
     const build = require('../deploy/build.json');
     let versionAsInt = build['build'];
