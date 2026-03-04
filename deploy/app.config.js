@@ -42,7 +42,6 @@ module.exports = async () => {
     const googleApiKeyAndroid = process.env.GOOGLE_API_KEY_ANDROID;
     const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
 
-    # download assets statically before handing to build
     ensureDir(ASSETS_DIR);
     const types = [
       'appIcon',
