@@ -1,8 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const fetch = require('node-fetch');
-
-const ASSETS_DIR = path.resolve(__dirname, 'assets/generated');
+const { execSync } = require('child_process');
 
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) {
@@ -10,58 +8,57 @@ function ensureDir(dir) {
   }
 }
 
-async function downloadImage(url, filename) {
-  const filePath = path.join(ASSETS_DIR, filename);
-
-  // Skip if already downloaded in this run
-  if (fs.existsSync(filePath)) {
-    return filePath;
+function downloadSync(url, filepath) {
+  if (fs.existsSync(filepath)) {
+    console.log(`✓ ${path.basename(filepath)} already exists`);
+    return;
   }
 
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(`Failed to download ${url} → ${response.status}`);
-  }
-
-  const buffer = await response.buffer();
-  fs.writeFileSync(filePath, buffer);
-
-  return filePath;
+  console.log(`Downloading ${url}`);
+  execSync(`curl -L --fail "${url}" -o "${filepath}"`, {
+    stdio: 'inherit',
+  });
 }
 
-module.exports = async () => {
+const app = require('./app.json');
+
+const ASSETS_DIR = path.resolve(__dirname, 'assets/generated');
+ensureDir(ASSETS_DIR);
+
+const types = [
+  'appIcon',
+  'appSplash',
+  'appIconAndroid',
+  'appNotification',
+  'appLogin',
+  'logoApp',
+];
+
+for (const type of types) {
+  const params = new URLSearchParams({
+    method: 'getLogoFile',
+    themeId: String(app['themeId']),
+    type: type,
+    slug: app['slug'],
+  });
+
+  const url = `${app['discoveryUrl']}/API/SystemAPI?${params.toString()}`;
+  const filepath = path.join(ASSETS_DIR, `${type}.png`);
+
+  downloadSync(url, filepath);
+}
+
+module.exports = () => {
     const version = require('../version.json');
     const build = require('../deploy/build.json');
     let versionAsInt = build['build'];
     versionAsInt = parseInt(versionAsInt, 10);
+    
+    const generated = file => path.resolve(__dirname, 'assets/generated', file);
      
-    const app = require('../deploy/app.json');
-
     const googleApiKeyApple = process.env.GOOGLE_API_KEY_APPLE;
     const googleApiKeyAndroid = process.env.GOOGLE_API_KEY_ANDROID;
     const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
-
-    ensureDir(ASSETS_DIR);
-    const types = [
-      'appIcon',
-      'appSplash',
-      'appIconAndroid',
-      'appNotification',
-      'appLogin',
-      'logoApp',
-    ];
-    const downloadedAssets = {};
-    for (const type of types) {
-      const params = new URLSearchParams({
-        method: 'getLogoFile',
-        themeId: String(app['themeId']),
-        type: app['type'],
-        slug: app['slug'],
-      });
-      const url = `${app['discoveryUrl']}/API/SystemAPI?${params.toString()}`;
-      downloadedAssets[type] = await downloadImage(url,`${type}.png`);
-    }
 
     let config = {
          name: app['name'],
@@ -74,7 +71,7 @@ module.exports = async () => {
          newArchEnabled: false,
          userInterfaceStyle: 'automatic',
          orientation: 'default',
-         icon: downloadedAssets.appIcon,
+         icon: generated('appIcon.png'),
          updates: {
               enabled: true,
               checkAutomatically: 'ON_LOAD',
@@ -83,7 +80,7 @@ module.exports = async () => {
          },
          runtimeVersion: build['build'],
          splash: {
-              image: downloadedAssets.appSplash,
+              image: generated('appSplash.png'),
               resizeMode: 'contain',
               backgroundColor: app['background'],
          },
@@ -92,7 +89,7 @@ module.exports = async () => {
               buildNumber: build['build'],
               bundleIdentifier: app['reverseDns'],
               supportsTablet: true,
-              icon: downloadedAssets.appIcon,
+              icon: generated('appIcon.png'),
               infoPlist: {
                    NSLocationAlwaysAndWhenInUseUsageDescription: 'This app uses your location to find nearby libraries to make logging in easier',
                    NSLocationWhenInUseUsageDescription: 'This app uses your location to find nearby libraries to make logging in easier',
@@ -134,10 +131,10 @@ module.exports = async () => {
               versionCode: versionAsInt,
               permissions: ['ACCESS_COARSE_LOCATION', 'ACCESS_FINE_LOCATION', 'RECEIVE_BOOT_COMPLETED', 'SCHEDULE_EXACT_ALARM', 'CAMERA', 'READ_CALENDAR', 'WRITE_CALENDAR'],
               adaptiveIcon: {
-                   foregroundImage: downloadedAssets.appIconAndroid,
+                   foregroundImage: generated('appIconAndroid.png'),
                    backgroundColor: app['background'],
               },
-              icon: downloadedAssets.appIconAndroid,
+              icon: generated('appIconAndroid.png'),
               config: {
                    googleMaps: {
                         apiKey: googleApiKeyAndroid,
@@ -146,13 +143,13 @@ module.exports = async () => {
               edgeToEdgeEnabled: true
          },
          notification: {
-              icon: downloadedAssets.appNotification,
+              icon: generated('appNotification.png'),
          },
          extra: {
               apiUrl: app['discoveryUrl'],
               greenhouseUrl: app['greenhouseUrl'],
-              loginLogo: downloadedAssets.appLogin,
-              libraryCardLogo: downloadedAssets.logoApp,
+              loginLogo: generated('appLogin.png'),
+              libraryCardLogo: generated('logoApp.png'),
               backgroundColor: app['background'],
               libraryId: app['libraryId'],
               themeId: app['themeId'],
