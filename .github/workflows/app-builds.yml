@@ -138,6 +138,7 @@ jobs:
       - name: 📦 Install dependencies
         run: |
           yarn install
+          yarn add node-fetch@2
         working-directory: ./code
 
       - name: 📱 Setup EAS build cache
