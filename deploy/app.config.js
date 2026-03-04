@@ -20,7 +20,7 @@ function downloadSync(url, filepath) {
   });
 }
 
-const app = require('./app.json');
+const app = require('../deploy/app.json');
 
 const ASSETS_DIR = path.resolve(__dirname, 'assets/generated');
 ensureDir(ASSETS_DIR);
