@@ -56,8 +56,8 @@ module.exports = async () => {
       const params = new URLSearchParams({
         method: 'getLogoFile',
         themeId: String(app['themeId']),
-        app['type'],
-        app['slug'],
+        type: app['type'],
+        slug: app['slug'],
       });
       const url = `${app['discoveryUrl']}/API/SystemAPI?${params.toString()}`;
       downloadedAssets[type] = await downloadImage(url,`${type}.png`);
