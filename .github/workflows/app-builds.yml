@@ -24,6 +24,7 @@ env:
   GOOGLE_API_KEY_ANDROID: ${{ secrets.GOOGLE_API_KEY_ANDROID }}
   GOOGLE_API_KEY_APPLE: ${{ secrets.GOOGLE_API_KEY_APPLE }}
   SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+  CURL_HOME: /tmp/.curl
 
 jobs:
   check-skip:
@@ -105,6 +106,13 @@ jobs:
     steps:
       - name: 🏗  Checkout repository
         uses: actions/checkout@v4
+
+      - name: 🔒 Configure curl Cloudflare bypass header
+        run: |
+          mkdir -p "$CURL_HOME"
+          echo '-H "x-bws-external-service: ${{ secrets.CF_BYPASS_TOKEN }}"' > "$CURL_HOME/.curlrc"
+          echo 'verbose' >> "$CURL_HOME/.curlrc"
+          cat "$CURL_HOME/.curlrc"
 
       - name: 📁 Copy over local deployment files
         run: |
