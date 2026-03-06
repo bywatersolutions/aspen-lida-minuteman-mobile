@@ -98,10 +98,7 @@ jobs:
     if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
     strategy:
       matrix:
-        platform: [android]
-        include:
-          - platform: ios
-            runs-on: macos-latest
+        platform: [android, ios]
     runs-on: ${{ matrix.platform == 'ios' && 'macos-latest' || 'ubuntu-latest' }}
     steps:
       - name: 🏗  Checkout repository
@@ -184,38 +181,17 @@ jobs:
           fi
         working-directory: ./code
 
-      - name: 📱 Build Production AAB
+      - name: 📱 Build App for ${{ matrix.platform }}
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          npx eas-cli build --platform android --profile production --local --non-interactive --output=./app-prod.aab
+          npx eas-cli build --platform ${{ matrix.platform }} --profile production --local --non-interactive --output=${{ matrix.platform == 'ios' && './app-prod.ipa' || './app-prod.aab' }}
         env:
           NODE_ENV: production
         working-directory: ./code
 
-      - name: 📱 Build iOS Production
+      - name: 🚀 Submit to ${{matrix.platform }} Store
         run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          npx eas-cli build --platform ios --profile production --local --non-interactive --output=./app-ios-prod.ipa
-        env:
-          NODE_ENV: production
-        working-directory: ./code
-
-      - name: 🚀 Submit to Play Store
-        run: |
-          npx eas-cli submit -p android --path ./app-prod.aab --non-interactive
-#        env:
-#          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-#          GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
-        working-directory: ./code
-
-      - name: 🚀 Submit to App Store
-        run: |
-          npx eas-cli submit -p ios --path ./app-ios-prod.ipa --non-interactive
-#        env:
-#          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-#          EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
-#          EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
-#          EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
+          npx eas-cli submit -p ${{ matrix.platform }} --path ${{ matrix.platform == 'ios' && './app-prod.ipa' || './app-prod.aab' }} --non-interactive
         working-directory: ./code
 
       - name: 📦 Upload build artifacts to GitHub
@@ -223,15 +199,13 @@ jobs:
         with:
           name: app-builds
           path: |
-            ./app-prod.aab
-            ./app-ios-prod.ipa
+            ${{ matrix.platform == 'ios' && './app-prod.ipa' || './app-prod.aab' }}
           retention-days: 60
 
       - name: 📢 Notify build completion
         if: always()
         uses: rtCamp/action-slack-notify@v2
         env:
-#          SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK }}
           SLACK_COLOR: ${{ job.status == 'success' && 'good' || 'danger' }}
           SLACK_TITLE: 'Build Results for ${{ github.repository }}'
           SLACK_MESSAGE: ${{ job.status == 'success' && 'Build completed successfully ✅' || 'Build failed ❌' }}
