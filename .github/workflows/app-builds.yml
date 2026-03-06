@@ -189,18 +189,18 @@ jobs:
           NODE_ENV: production
         working-directory: ./code
 
+      - name: 📦 Upload build artifacts to GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-build-${{ matrix.platform }}
+          path: |
+            ${{ matrix.platform == 'ios' && './app-prod.ipa' || './app-prod.aab' }}
+          retention-days: 60
+
       - name: 🚀 Submit to ${{matrix.platform }} Store
         run: |
           npx eas-cli submit -p ${{ matrix.platform }} --path ${{ matrix.platform == 'ios' && './app-prod.ipa' || './app-prod.aab' }} --non-interactive
         working-directory: ./code
-
-      - name: 📦 Upload build artifacts to GitHub
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-builds
-          path: |
-            ${{ matrix.platform == 'ios' && './app-prod.ipa' || './app-prod.aab' }}
-          retention-days: 60
 
       - name: 📢 Notify build completion
         if: always()
