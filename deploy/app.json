@@ -1,0 +1,15 @@
+{
+      "name": "Minuteman Mobile",
+      "slug": "minuteman-mobile",
+      "easId": "c35160a2-a054-4063-855a-452e2fe85dbe",
+      "reverseDns": "org.aspendiscovery.minuteman",
+      "discoveryUrl": "https://catalog.minlib.net/",
+      "greenhouseUrl": "https://catalog.minlib.net/",
+      "libraryId": "2",
+      "themeId": "55",
+      "background": "#ffffff",
+      "sentryProject": "aspen-lida-minuteman-mobile",
+      "sentryDsn": "https://1aedaec68693be4f05fa3cae7f04f7d7@o994439.ingest.us.sentry.io/4507947284824064",
+      "ascAppId": "6683282969",
+      "logLevel": "0"
+}
