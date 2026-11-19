@@ -60,7 +60,7 @@
           "expo-sqlite": "~55.0.18",
           "expo-status-bar": "~55.0.6",
           "expo-system-ui": "~55.0.20",
-          "expo-updates": "~55.0.26",
+          "expo-updates": "~55.0.30",
           "expo-web-browser": "~55.0.18",
           "html-entities": "^2.5.2",
           "lodash": "^4.17.21",
@@ -86,7 +86,7 @@
           "react-native-svg": "15.15.3",
           "react-native-web": "^0.21.0",
           "react-native-webview": "13.16.0",
-          "react-native-worklets": "0.11.3",
+          "react-native-worklets": "0.11.4",
           "resolve-dependency": "1.0.3"
      },
      "devDependencies": {
