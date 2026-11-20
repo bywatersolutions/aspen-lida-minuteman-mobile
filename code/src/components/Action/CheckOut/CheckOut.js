@@ -29,7 +29,7 @@ import _ from 'lodash';
 import { useQueryClient } from '@tanstack/react-query';
 import { EyeOff, Eye } from 'lucide-react-native';
 import { useWindowDimensions } from 'react-native';
-import RenderHtml from 'react-native-render-html';
+import RenderHtml from '@native-html/render';
 
 // custom components and helper files
 
