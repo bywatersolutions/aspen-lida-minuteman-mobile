@@ -45,7 +45,7 @@ import React from 'react';
 import { EyeOff, Eye } from 'lucide-react-native';
 import { Platform, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import RenderHtml from 'react-native-render-html';
+import RenderHtml from '@native-html/render';
 
 import { useLibrary } from '../../../hooks/useLibrarySystemData';
 import { useUserState, useAccounts, useLocations, useSublocations, useUpdateUserProfile } from '../../../hooks/useUserData';
