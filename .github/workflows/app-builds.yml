@@ -198,22 +198,35 @@ jobs:
           EAS_LOCAL_BUILD_SKIP_CLEANUP: "1"
         working-directory: ./code
         
-      - name: Collect Gradle problems report
+      - name: Collect Gradle profile report
         if: always() && matrix.platform == 'android'
+        shell: bash
         run: |
           mkdir -p ./code/build-diagnostics
-          find /tmp/runner/eas-build-local-nodejs \
-            -type f \
-            -path '*/build/reports/problems/problems-report.html' \
-            -exec cp {} ./code/build-diagnostics/problems-report.html \; \
-            -quit
 
-      - name: Upload Gradle problems report
+          report="$(
+            find /tmp/runner/eas-build-local-nodejs \
+              -type f \
+              -path '*/build/reports/profile/profile-*.html' \
+              -printf '%T@ %p\n' 2>/dev/null \
+              | sort -nr \
+              | head -n 1 \
+              | cut -d' ' -f2-
+          )"
+
+          if [ -n "$report" ]; then
+            cp "$report" ./code/build-diagnostics/
+            echo "Saved Gradle profile report from: $report"
+          else
+            echo "::warning::No Gradle profile report found"
+          fi
+
+      - name: Upload Gradle profile report
         if: always() && matrix.platform == 'android'
         uses: actions/upload-artifact@v4
         with:
-          name: gradle-problems-report
-          path: ./code/build-diagnostics/problems-report.html
+          name: gradle-profile-report
+          path: ./code/build-diagnostics/profile-*.html
           if-no-files-found: warn
           retention-days: 60
           
