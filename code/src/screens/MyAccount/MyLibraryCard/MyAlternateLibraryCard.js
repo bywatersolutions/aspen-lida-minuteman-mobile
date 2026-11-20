@@ -3,7 +3,7 @@ import { EyeOff, Eye } from 'lucide-react-native';
 import { Pressable, ChevronLeftIcon, Box, ScrollView, ButtonGroup, Button, ButtonText, FormControl, FormControlLabel, FormControlLabelText, Input, InputField, InputSlot, InputIcon } from '@gluestack-ui/themed';
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
-import RenderHtml from 'react-native-render-html';
+import RenderHtml from '@native-html/render';
 import { useQueryClient } from '@tanstack/react-query';
 import { useRoute, useNavigation, CommonActions, StackActions } from '@react-navigation/native';
 import { LoadingSpinner } from '../../../components/loadingSpinner';
