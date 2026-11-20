@@ -195,8 +195,28 @@ jobs:
           SENTRY_DISABLE_AUTO_UPLOAD=true npx eas-cli build --platform ${{ matrix.platform }} --profile production --local --non-interactive --output=${{ matrix.platform == 'ios' && './app-prod.ipa' || './app-prod.aab' }}
         env:
           NODE_ENV: production
+          EAS_LOCAL_BUILD_SKIP_CLEANUP: "1"
         working-directory: ./code
+        
+      - name: Collect Gradle problems report
+        if: always() && matrix.platform == 'android'
+        run: |
+          mkdir -p ./code/build-diagnostics
+          find /tmp/runner/eas-build-local-nodejs \
+            -type f \
+            -path '*/build/reports/problems/problems-report.html' \
+            -exec cp {} ./code/build-diagnostics/problems-report.html \; \
+            -quit
 
+      - name: Upload Gradle problems report
+        if: always() && matrix.platform == 'android'
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-problems-report
+          path: ./code/build-diagnostics/problems-report.html
+          if-no-files-found: warn
+          retention-days: 60
+          
       - name: 📦 Upload build artifacts to GitHub
         uses: actions/upload-artifact@v4
         with:
