@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, ScrollView } from '@gluestack-ui/themed';
 
 import { useWindowDimensions } from 'react-native';
-import RenderHtml from 'react-native-render-html';
+import RenderHtml from '@native-html/render';
 import { decodeHTML } from '../../../helpers/helpers';
 import { useLibrary } from '../../../hooks/useLibrarySystemData';
 import { useTheme } from '../../../themes/theme';
