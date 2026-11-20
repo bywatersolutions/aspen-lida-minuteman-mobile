@@ -31,7 +31,7 @@ import { refreshProfile, updateAlternateLibraryCard } from '../../util/api/user'
 import { decodeHTML } from '../../helpers/helpers';
 import { completeAction } from '../../util/api/userHelper';
 import { useWindowDimensions } from 'react-native';
-import RenderHtml from 'react-native-render-html';
+import RenderHtml from '@native-html/render';
 import { EyeOff, Eye } from 'lucide-react-native';
 import { useQueryClient } from '@tanstack/react-query';
 import { logDebugMessage, logWarnMessage, getErrorMessage } from '../../util/logging';
