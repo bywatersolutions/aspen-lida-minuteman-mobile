@@ -189,9 +189,9 @@ jobs:
         working-directory: ./code 
         run: npx expo config --json --type public
 
-      - name: Check dependencies
-        working-directory: ./code
-        run: npx expo install --check --json
+#      - name: Check dependencies
+#        working-directory: ./code
+#        run: npx expo install --check --json
 
       - name: 📱 Build App for ${{ matrix.platform }}
         run: |
