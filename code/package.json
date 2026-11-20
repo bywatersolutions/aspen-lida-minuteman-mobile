@@ -69,7 +69,7 @@
           "moment": "^2.30.1",
           "react": "19.2.0",
           "react-dom": "19.2.0",
-          "react-native": "0.83.6",
+          "react-native": "0.83.10",
           "react-native-barcode-expo": "^2.0.0",
           "react-native-barcode-mask": "^1.2.4",
           "react-native-base64": "^0.2.1",
