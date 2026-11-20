@@ -189,6 +189,10 @@ jobs:
         working-directory: ./code 
         run: npx expo config --json --type public
 
+      - name: Check dependencies
+        working-directory: ./code
+        run: npx expo install --check --json
+
       - name: 📱 Build App for ${{ matrix.platform }}
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
