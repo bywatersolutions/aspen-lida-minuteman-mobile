@@ -31,7 +31,7 @@
     },
     "production": {
       "android": {
-        "gradleCommand": ":app:bundleRelease --full-stacktrace --info"
+        "gradleCommand": ":app:bundleRelease --full-stacktrace --info -Pandroid.native.buildOutput=verbose"
       },
       "ios": {
         "resourceClass": "m-medium"
