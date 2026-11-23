@@ -31,7 +31,7 @@
     },
     "production": {
       "android": {
-        "gradleCommand": ":app:bundleRelease -x lintVitalAnalyzeRelease"
+        "gradleCommand": ":app:bundleRelease --stacktrace -x lintVitalAnalyzeRelease"
       },
       "ios": {
         "resourceClass": "m-medium"
