@@ -101,7 +101,7 @@ jobs:
       fail-fast: false
       matrix:
         platform: [android, ios]
-    runs-on: ${{ matrix.platform == 'ios' && 'macos-26' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.platform == 'ios' && 'macos-26' || 'ubuntu-24.04' }}
     steps:
       - name: 🏗  Checkout repository
         uses: actions/checkout@v4
